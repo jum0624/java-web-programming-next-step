@@ -1,6 +1,7 @@
 package org.example;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +12,13 @@ import java.util.regex.Pattern;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StringCalculatorTest {
+    private StringCalculator stringCalculator;
+
+    @BeforeEach
+    public void setup() {
+        stringCalculator = new StringCalculator();
+    }
+
     @Test
     @DisplayName("빈 문자열 입력 시, 결과값으로 0을 반환한다.")
     public void inputNullStringTest1() throws Exception {
@@ -19,7 +27,7 @@ class StringCalculatorTest {
         int result = -1;
         
         // when
-        if (text == null || text.isEmpty()) {
+        if (text == null || text.isBlank()) {
             result = 0;
         }
 
@@ -35,7 +43,7 @@ class StringCalculatorTest {
         int result = -1;
 
         // when
-        if (text == null || text.isEmpty()) {
+        if (text == null || text.isBlank()) {
             result = 0;
         }
 
@@ -51,7 +59,7 @@ class StringCalculatorTest {
         int result = -1;
 
         // when
-        if (text == null || text.isEmpty() || text.equals(" ")) {
+        if (text == null || text.isBlank()) {
             result = 0;
         }
 
@@ -66,10 +74,13 @@ class StringCalculatorTest {
         String text = "1";
 
         // when
-        int number = Integer.parseInt(text);
+        String[] split = text.split(",");
+        int sum = Arrays.stream(split)
+                .mapToInt(Integer::parseInt)
+                .sum();
 
         // then
-        assertEquals(1, number);
+        assertEquals(1, sum);
     }
 
     @Test
@@ -115,7 +126,7 @@ class StringCalculatorTest {
         // when
         Matcher matcher = Pattern.compile("//(.)\n(.*)").matcher(text);
         int sum = 0;
-        if (matcher.find()) {
+        if (matcher.find()) {  // 패턴이 일치한 문자열이 있다면
             String customDelimeter = matcher.group(1);
             String[] split = matcher.group(2).split(customDelimeter);
 
@@ -127,4 +138,79 @@ class StringCalculatorTest {
         // then
         assertEquals(5, sum);
     }
+    
+    @Test
+    @DisplayName("입력한 값이 null이거나 빈 문자열이라면 0반환")
+    public void inputNullStringTest() throws Exception {
+        // given
+        String text1 = "";
+        String text2 = " ";
+        String text3 = null;
+        
+        // when
+        int emptyText1 = stringCalculator.add(text1);
+        int emptyText2 = stringCalculator.add(text2);
+        int emptyText3 = stringCalculator.add(text3);
+
+
+        // then
+        assertEquals(0, emptyText1);
+        assertEquals(0, emptyText2);
+        assertEquals(0, emptyText3);
+    }
+    
+    @Test
+    @DisplayName("입력한 값이 숫자만 입력한 문자열이라면 숫자로 변환 후 반환")
+    public void numberStringAddTest() throws Exception {
+        // given
+        String text1 = "12";
+        String text2 = "1";
+        String text3 = "999";
+        
+        // when
+        int test1 = stringCalculator.add(text1);
+        int test2 = stringCalculator.add(text2);
+        int test3 = stringCalculator.add(text3);
+
+        // then
+        assertEquals(12, test1);
+        assertEquals(1, test2);
+        assertEquals(999, test3);
+    }
+
+    @Test
+    @DisplayName("커스텀하지 않은 구분자로 입력한 경우, 해당 구분자를 기준으로 구분하기")
+    public void notCustomStringAddTest() throws Exception {
+        // given
+        String text1 = "1,2,3";
+        String text2 = "1:2:3";
+        String text3 = "1,2:3";
+
+        // when
+        int result1 = stringCalculator.add(text1);
+        int result2 = stringCalculator.add(text2);
+        int result3 = stringCalculator.add(text3);
+
+        // then
+        assertEquals(6, result1);
+        assertEquals(6, result2);
+        assertEquals(6, result3);
+    }
+
+    @Test
+    @DisplayName("커스텀한 구분자로 입력한 경우, 해당 구분자를 기준으로 구분하기")
+    public void customStringAddTest() throws Exception {
+        // given
+        String text1 = "//;\n1;2;3";
+        String text2 = "///\n1/2/3";
+
+        // when
+        int result1 = stringCalculator.add(text1);
+        int result2 = stringCalculator.add(text2);
+
+        // then
+        assertEquals(6, result1);
+        assertEquals(6, result2);
+    }
+    
 }
