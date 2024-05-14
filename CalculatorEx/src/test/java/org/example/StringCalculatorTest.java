@@ -213,4 +213,93 @@ class StringCalculatorTest {
         assertEquals(6, result2);
     }
     
+    @Test
+    @DisplayName("구분자를 기준으로 숫자가 아닌 다른 문자를 입력한 경우 예외를 발생 시킨다.")
+    public void checkInputStringToIntExceptionTest() throws Exception {
+        // given
+        String text1 = "i,j,2";
+        String text2 = "#,3,4";
+        
+        // when
+
+
+        // then
+        assertThrows(InputException.class, () -> stringCalculator.add(text1));
+        assertThrows(InputException.class, () -> stringCalculator.add(text2));
+    }
+
+    @Test
+    @DisplayName("커스텀 구분자 지정을 잘못 지정하여 입력한 경우 예외 처리")
+    public void customInputExceptionTest() throws Exception {
+        // given
+        String text = "::i\n1i2i3";
+
+        // when
+
+
+        // then
+        assertThrows(InputException.class, () -> stringCalculator.add(text));
+    }
+
+    @Test
+    @DisplayName("기본 구분자가 아닌 다른 구분자를 커스텀 지정 없이 입력한 경우 예외처리")
+    public void basicDelimeterInputExceptionTest1() throws Exception {
+        // given
+        String text1 = "1.2.3";
+        String text2 = "1@3^4";
+
+        // when
+
+
+        // then
+        assertThrows(InputException.class, () -> stringCalculator.add(text1));
+        assertThrows(InputException.class, () -> stringCalculator.add(text2));
+    }
+
+    @Test
+    @DisplayName("기본 구분자 이외에 다른 구분자를 혼합하여 입력한 경우 예외처리")
+    public void basicDelimeterInputExceptionTest2() throws Exception {
+        // given
+        String text1 = "1,2*3";
+        String text2 = "2:3,4*5";
+
+        // when
+
+
+        // then
+        assertThrows(InputException.class, () -> stringCalculator.add(text1));
+        assertThrows(InputException.class, () -> stringCalculator.add(text2));
+
+    }
+
+    @Test
+    @DisplayName("구분자 사이에 공백 넣어 입력한 경우 예외처리")
+    public void inputBlankExceptionTest() throws Exception {
+        // given
+        String text1 = "1, 2, 3";
+        String text2 = "1 , 2 , 3";
+
+        // when
+
+
+        // then
+        assertThrows(InputException.class, () -> stringCalculator.add(text1));
+        assertThrows(InputException.class, () -> stringCalculator.add(text2));
+    }
+
+    @Test
+    @DisplayName("음수를 입력한 경우 예외처리")
+    public void inputNegativeNumberExceptionTest() throws Exception {
+        // given
+        String text1 = "1,2,-3";
+        String text2 = "-1,-2,-3";
+
+        // when
+
+
+        // then
+        assertThrows(InputException.class, () -> stringCalculator.add(text1));
+        assertThrows(InputException.class, () -> stringCalculator.add(text2));
+    }
+
 }

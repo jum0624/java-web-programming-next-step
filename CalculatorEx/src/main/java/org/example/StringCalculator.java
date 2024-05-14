@@ -23,11 +23,16 @@ public class StringCalculator {
     public int stringToInt(String[] tokens) {
         try {
             return Arrays.stream(tokens)
-                    .mapToInt(Integer::parseInt)
-                    .filter(number -> number >= 0)
+                    .mapToInt(token -> {
+                        int number = Integer.parseInt(token);
+                        if (number < 0) {
+                            throw new InputException("Negative number detected: " + number);
+                        }
+                        return number;
+                    })
                     .sum();
         } catch (NumberFormatException e) {
-            throw new InputException("0 이상의 양수를 입력해주세요.");
+            throw new InputException("다시 입력해주세요.");
         }
     }
 
@@ -40,6 +45,8 @@ public class StringCalculator {
     }
 
     public int add(String text) {
+        this.text = text;
+        // 초기화를 여기서 하는게 맞을까...? 이렇게 된다면 객체 생성 시, text = null로 초기화 할 필요가 있나..? 계속 add를 선언할 때마다 값을 바뀔텐데..
         if (isEmptyText(text)) return 0;
         customSplit(text);
         String[] tokens = this.text.split(delimeter);
