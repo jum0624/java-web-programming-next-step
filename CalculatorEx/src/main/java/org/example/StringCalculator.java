@@ -1,72 +1,61 @@
 package org.example;
 
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringCalculator {
-    private String text;
     private String delimeter;
 
+    private final String basicDelimeter = ":|,";
+    private final String customRegex = "//(.)\n(.*)";
+
     public StringCalculator() {
-        this.text = null;
-        this.delimeter = ":|,";
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getDelimeter() {
-        return delimeter;
-    }
-
-    public void setDelimeter(String delimeter) {
-        this.delimeter = delimeter;
-    }
-
-    private boolean isEmptyText(String text) {
-        if (text == null || text.isBlank()) {
-            return true;
-        }
-        return false;
-    }
-
-    private int validationNumber(String[] tokens) {
-        try {
-            return Arrays.stream(tokens)
-                    .mapToInt(this::stringToInt)
-                    .sum();
-        } catch (NumberFormatException e) {
-            throw new InputException("다시 입력해주세요.");
-        }
-    }
-
-    private void customSplit(String text) {
-        Matcher matcher = Pattern.compile("//(.)\n(.*)").matcher(text);
-        if (matcher.find()) {
-            setDelimeter(matcher.group(1));
-            setText(matcher.group(2));
-        }
+        this.delimeter = basicDelimeter;
     }
 
     public int add(String text) {
-        setText(text);
-        if (isEmptyText(text)) return 0;  // 유효성 검증으로 입력값 변환 x
-        customSplit(text); // text, Delimeter 변동 가능(파라미터 text를 사용하게 되면 값 변환 가능성 있음)
-        String[] tokens = getText().split(getDelimeter());
-        return validationNumber(tokens);
+        if (isEmptyText(text)) return 0;
+        return sum(stringToInt(split(getDelimeter(text))));
     }
 
-    private int stringToInt(String token) {
-        int number = Integer.parseInt(token);
+    private int sum(int[] numbers) {
+        int sum = 0;
+        for (int i = 0; i < numbers.length; i++) {
+            sum += toPositive(numbers[i]);
+        }
+        return sum;
+    }
+
+
+    private int toPositive(int number) {
         if (number < 0) {
-            throw new InputException("Negative number detected: " + number);
+            throw new RuntimeException("0이상의 숫자를 입력하세요.");
         }
         return number;
+    }
+
+    private int[] stringToInt(String[] tokens) {
+        int[] numbers = new int[tokens.length];
+        for (int i = 0; i < numbers.length; i++) {
+            numbers[i] = Integer.parseInt(tokens[i]);
+        }
+        return numbers;
+    }
+
+    private String[] split(String text) {
+        return text.split(delimeter);
+    }
+
+    private String getDelimeter(String text) {
+        Matcher matcher = Pattern.compile(customRegex).matcher(text);
+        if (matcher.find()) {
+            this.delimeter = matcher.group(1);
+            text = matcher.group(2);
+        }
+        return text;
+    }
+
+    private boolean isEmptyText(String text) {
+        return text == null || text.isBlank();
     }
 }

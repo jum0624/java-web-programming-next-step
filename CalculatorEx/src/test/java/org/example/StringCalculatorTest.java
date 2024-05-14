@@ -19,126 +19,7 @@ class StringCalculatorTest {
         stringCalculator = new StringCalculator();
     }
 
-    @Test
-    @DisplayName("빈 문자열 입력 시, 결과값으로 0을 반환한다.")
-    public void inputNullStringTest1() throws Exception {
-        // given
-        String text = "";
-        int result = -1;
-        
-        // when
-        if (text == null || text.isBlank()) {
-            result = 0;
-        }
 
-        // then
-        assertEquals(0, result);
-    }
-
-    @Test
-    @DisplayName("입력 시, null일 경우 결과값으로 0을 반환한다.")
-    public void inputNullStringTest2() throws Exception {
-        // given
-        String text = null;
-        int result = -1;
-
-        // when
-        if (text == null || text.isBlank()) {
-            result = 0;
-        }
-
-        // then
-        assertEquals(0, result);
-    }
-
-    @Test
-    @DisplayName("공백 문자열 입력 시, 결과값으로 0을 반환한다.")
-    public void inputNullStringTest3() throws Exception {
-        // given
-        String text = " ";
-        int result = -1;
-
-        // when
-        if (text == null || text.isBlank()) {
-            result = 0;
-        }
-
-        // then
-        assertEquals(0, result);
-    }
-
-    @Test
-    @DisplayName("숫자 하나만 문자열로 입력한 경우, 해당 숫자를 반환한다.")
-    public void inputOneNumberStringTest() throws Exception {
-        // given
-        String text = "1";
-
-        // when
-        String[] split = text.split(",");
-        int sum = Arrays.stream(split)
-                .mapToInt(Integer::parseInt)
-                .sum();
-
-        // then
-        assertEquals(1, sum);
-    }
-
-    @Test
-    @DisplayName(", 구분자를 통해 입력할 경우, 구분자를 기준으로 합을 계산한다.")
-    public void inputStringSplitTest() throws Exception {
-        // given
-        String text = "1,2";
-
-
-        // when
-        String[] split = text.split(",");
-        int sum = Arrays.stream(split)
-                .mapToInt(Integer::parseInt)
-                .sum();
-
-        // then
-        assertEquals(3, sum);
-    }
-
-    @Test
-    @DisplayName(", 또는 : 으로 구분자를 통해 입력했을 때, 해당 문자열을 기준으로 합을 계산한다.")
-    public void inputStringSplitTest2() throws Exception {
-        // given
-        String text = "1,2:3";
-
-
-        // when
-        String[] split = text.split(",|:");
-        int sum = Arrays.stream(split)
-                .mapToInt(Integer::parseInt)
-                .sum();
-
-        // then
-        assertEquals(6, sum);
-    }
-
-    @Test
-    @DisplayName("//와 \n 사이에 구분자를 입력하여 커스텀한 경우, 해당 구분자를 기준으로 합을 구한다.")
-    public void inputCustomStringSplitTest() throws Exception {
-        // given
-        String text = "//;\n2;3";
-
-        // when
-        Matcher matcher = Pattern.compile("//(.)\n(.*)").matcher(text);
-        int sum = 0;
-        if (matcher.find()) {  // 패턴이 일치한 문자열이 있다면
-            String customDelimeter = matcher.group(1);
-            String[] split = matcher.group(2).split(customDelimeter);
-
-            sum = Arrays.stream(split)
-                    .mapToInt(Integer::parseInt)
-                    .sum();
-        }
-
-        // then
-        assertEquals(5, sum);
-    }
-    
     @Test
     @DisplayName("입력한 값이 null이거나 빈 문자열이라면 0반환")
     public void inputNullStringTest() throws Exception {
@@ -224,8 +105,8 @@ class StringCalculatorTest {
 
 
         // then
-        assertThrows(InputException.class, () -> stringCalculator.add(text1));
-        assertThrows(InputException.class, () -> stringCalculator.add(text2));
+        assertThrows(RuntimeException.class, () -> stringCalculator.add(text1));
+        assertThrows(RuntimeException.class, () -> stringCalculator.add(text2));
     }
 
     @Test
@@ -238,7 +119,7 @@ class StringCalculatorTest {
 
 
         // then
-        assertThrows(InputException.class, () -> stringCalculator.add(text));
+        assertThrows(RuntimeException.class, () -> stringCalculator.add(text));
     }
 
     @Test
@@ -252,8 +133,8 @@ class StringCalculatorTest {
 
 
         // then
-        assertThrows(InputException.class, () -> stringCalculator.add(text1));
-        assertThrows(InputException.class, () -> stringCalculator.add(text2));
+        assertThrows(RuntimeException.class, () -> stringCalculator.add(text1));
+        assertThrows(RuntimeException.class, () -> stringCalculator.add(text2));
     }
 
     @Test
@@ -267,8 +148,8 @@ class StringCalculatorTest {
 
 
         // then
-        assertThrows(InputException.class, () -> stringCalculator.add(text1));
-        assertThrows(InputException.class, () -> stringCalculator.add(text2));
+        assertThrows(RuntimeException.class, () -> stringCalculator.add(text1));
+        assertThrows(RuntimeException.class, () -> stringCalculator.add(text2));
 
     }
 
@@ -283,8 +164,8 @@ class StringCalculatorTest {
 
 
         // then
-        assertThrows(InputException.class, () -> stringCalculator.add(text1));
-        assertThrows(InputException.class, () -> stringCalculator.add(text2));
+        assertThrows(RuntimeException.class, () -> stringCalculator.add(text1));
+        assertThrows(RuntimeException.class, () -> stringCalculator.add(text2));
     }
 
     @Test
@@ -298,8 +179,8 @@ class StringCalculatorTest {
 
 
         // then
-        assertThrows(InputException.class, () -> stringCalculator.add(text1));
-        assertThrows(InputException.class, () -> stringCalculator.add(text2));
+        assertThrows(RuntimeException.class, () -> stringCalculator.add(text1));
+        assertThrows(RuntimeException.class, () -> stringCalculator.add(text2));
     }
 
 }
