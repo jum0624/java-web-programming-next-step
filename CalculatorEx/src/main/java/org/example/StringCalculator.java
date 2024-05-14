@@ -13,6 +13,22 @@ public class StringCalculator {
         this.delimeter = ":|,";
     }
 
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getDelimeter() {
+        return delimeter;
+    }
+
+    public void setDelimeter(String delimeter) {
+        this.delimeter = delimeter;
+    }
+
     private boolean isEmptyText(String text) {
         if (text == null || text.isBlank()) {
             return true;
@@ -20,36 +36,37 @@ public class StringCalculator {
         return false;
     }
 
-    public int stringToInt(String[] tokens) {
+    private int validationNumber(String[] tokens) {
         try {
             return Arrays.stream(tokens)
-                    .mapToInt(token -> {
-                        int number = Integer.parseInt(token);
-                        if (number < 0) {
-                            throw new InputException("Negative number detected: " + number);
-                        }
-                        return number;
-                    })
+                    .mapToInt(this::stringToInt)
                     .sum();
         } catch (NumberFormatException e) {
             throw new InputException("다시 입력해주세요.");
         }
     }
 
-    public void customSplit(String text) {
+    private void customSplit(String text) {
         Matcher matcher = Pattern.compile("//(.)\n(.*)").matcher(text);
         if (matcher.find()) {
-            this.delimeter = matcher.group(1);
-            this.text = matcher.group(2);
+            setDelimeter(matcher.group(1));
+            setText(matcher.group(2));
         }
     }
 
     public int add(String text) {
-        this.text = text;
-        // 초기화를 여기서 하는게 맞을까...? 이렇게 된다면 객체 생성 시, text = null로 초기화 할 필요가 있나..? 계속 add를 선언할 때마다 값을 바뀔텐데..
-        if (isEmptyText(text)) return 0;
-        customSplit(text);
-        String[] tokens = this.text.split(delimeter);
-        return stringToInt(tokens);
+        setText(text);
+        if (isEmptyText(text)) return 0;  // 유효성 검증으로 입력값 변환 x
+        customSplit(text); // text, Delimeter 변동 가능(파라미터 text를 사용하게 되면 값 변환 가능성 있음)
+        String[] tokens = getText().split(getDelimeter());
+        return validationNumber(tokens);
+    }
+
+    private int stringToInt(String token) {
+        int number = Integer.parseInt(token);
+        if (number < 0) {
+            throw new InputException("Negative number detected: " + number);
+        }
+        return number;
     }
 }
